@@ -52,9 +52,11 @@ with col5:
 
 
 if st.button('Predict Probability'):
-   if score == target and wickets == 10 :
+   if (score == target) and wickets == 10 :
       st.header("Wrong Combinations")
-   elif score == target and batting_team != bowling_team:
+   elif (score > target+6):
+      st.header("Wrong Combinations")
+   elif score >= target and batting_team != bowling_team:
       st.header(batting_team + "-100%")
       st.header(bowling_team + "-0%")
    else :
