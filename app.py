@@ -34,7 +34,8 @@ col1, col2 = st.columns(2)
 with col1:
    batting_team = st.selectbox('Select the batting team',sorted(teams))
 with col2:
-   bowling_team = st.selectbox('Select the bowling team',sorted(teams))
+   available_bowling_teams = [team for team in sorted(teams) if team != batting_team]
+   bowling_team = st.selectbox('Select the bowling team', available_bowling_teams)
 
 selected_city = st.selectbox('Select host city',sorted(cities))
 
@@ -52,13 +53,19 @@ with col5:
 
 
 if st.button('Predict Probability'):
-   if (score == target) and wickets == 10 :
-      st.header("Wrong Combinations")
-   elif (score > target+6):
-      st.header("Wrong Combinations")
-   elif score >= target and batting_team != bowling_team:
+   if ((score >= target+6) or (score >= target and wickets == 10) or (overs > 20)):
+      st.header("Invalid Combinations")
+   
+   elif score >= target:
       st.header(batting_team + "-100%")
       st.header(bowling_team + "-0%")
+
+   elif ((( overs==20) and (score== target-1)) or ((score==target-1) and (wickets==10))):
+      st.header("Match Tied")
+   
+   elif ((overs==20 and score < target-1) or ((score<target-1) and (wickets==10))):
+      st.header(batting_team + "-0%")
+      st.header(bowling_team + "-100%")
    else :
       runs_left = target - score
       balls_left = 120 - int(overs) * 6 - (overs - int(overs)) * 10
@@ -72,15 +79,14 @@ if st.button('Predict Probability'):
       else :
          rrr = 0
 
-      if batting_team != bowling_team:
+      
          
-         input_df = pd.DataFrame({'batting_team':[batting_team],'bowling_team':[bowling_team],'city':[selected_city],'runs_left':[runs_left],'balls_left':[balls_left],'wickets_left':[wickets],'total_runs_x':[target],'crr':[crr],'rrr':[rrr]})
+      input_df = pd.DataFrame({'batting_team':[batting_team],'bowling_team':[bowling_team],'city':[selected_city],'runs_left':[runs_left],'balls_left':[balls_left],'wickets_left':[wickets],'total_runs_x':[target],'crr':[crr],'rrr':[rrr]})
 
 
-         result = pipe.predict_proba(input_df)
-         loss = result[0][0]
-         win = result[0][1]
-         st.header(batting_team + "- " + str(round(win*100)) + "%")
-         st.header(bowling_team + "- " + str(round(loss*100)) + "%")
-      else :
-         st.header("Please ensure that you do not select the same team for both batting and bowling.")
+      result = pipe.predict_proba(input_df)
+      loss = result[0][0]
+      win = result[0][1]
+      st.header(batting_team + "- " + str(round(win*100)) + "%")
+      st.header(bowling_team + "- " + str(round(loss*100)) + "%")
+      
