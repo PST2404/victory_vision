@@ -57,15 +57,15 @@ if st.button('Predict Probability'):
       st.header("Invalid Combinations")
    
    elif score >= target:
-      st.header(batting_team + "-100%")
-      st.header(bowling_team + "-0%")
+      st.header(batting_team + " won the match")
+      st.header(bowling_team + " lost the match")
 
    elif ((( overs==20) and (score== target-1)) or ((score==target-1) and (wickets==10))):
       st.header("Match Tied")
    
    elif ((overs==20 and score < target-1) or ((score<target-1) and (wickets==10))):
-      st.header(batting_team + "-0%")
-      st.header(bowling_team + "-100%")
+      st.header(batting_team + " lost the match")
+      st.header(bowling_team + " won the matchh")
    else :
       runs_left = target - score
       balls_left = 120 - int(overs) * 6 - (overs - int(overs)) * 10
