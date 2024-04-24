@@ -41,15 +41,17 @@ selected_city = st.selectbox('Select host city',sorted(cities))
 
 target = st.number_input('Target', min_value=1, step=1)
 
-col3,col4,col5 = st.columns(3)
+col3,col4,col5,col6 = st.columns(4)
 
 
 with col3:
    score = st.number_input('Score', min_value=0, step=1)
 with col4:
-   overs = st.number_input('Overs completed', min_value=0.0, max_value=20.0,step=0.1, format="%0.1f")
-with col5:
    wickets = st.number_input('Wickets out', min_value=0, max_value=10, format="%d")
+with col5:
+   overs = st.number_input('Overs completed', min_value=0, max_value=19,step=1, format="%d")
+with col6:
+   balls = st.number_input('Balls completed', min_value=0, max_value=6,step=1, format="%d")
 
 
 if st.button('Predict Probability'):
@@ -68,10 +70,10 @@ if st.button('Predict Probability'):
       st.header(bowling_team + " won the matchh")
    else :
       runs_left = target - score
-      balls_left = 120 - int(overs) * 6 - (overs - int(overs)) * 10
+      balls_left = 120 - overs * 6 - balls
       wickets = 10 - wickets
       if overs != 0:
-         crr = score/(int(overs) * 6 + (overs - int(overs)) * 10)
+         crr = (score*6)/(120 - balls_left)
       else:
          crr = 0  
       if balls_left > 0:
