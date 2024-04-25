@@ -47,46 +47,46 @@ col3,col4,col5,col6 = st.columns(4)
 with col3:
    score = st.number_input('Score', min_value=0, step=1)
 with col4:
-   wickets = st.number_input('Wickets out', min_value=0, max_value=10, format="%d") #, required=True)
+   wickets = st.number_input('Wickets out', min_value=0, max_value=10, format="%d")
 with col5:
-   overs = st.number_input('Overs completed', min_value=0, max_value=19,step=1, format="%d") #, required=True)
+   overs = st.number_input('Overs completed', min_value=0, max_value=19,step=1, format="%d")
 with col6:
-   balls = st.number_input('Balls completed', min_value=0, max_value=6,step=1, format="%d") #, required=True)
+   balls = st.number_input('Balls completed', min_value=0, max_value=6,step=1, format="%d")
 
-if ((wickets<=10 and wickets>=0) and (overs<=19 and overs>=0) and (balls<=6 and balls>=0)):
-   if st.button('Predict Probability'):
-      if ((score >= target+6) or (score >= target and wickets >= 10) or ((overs*6 + balls) > 120) or overs > 19 or balls >6):
-         st.header("Invalid Combinations")
-         
-      elif ((score < target) and (wickets > 10 or ((overs*6 + balls) > 120))):
-         st.header("Invalid Combinations")
-         
-      elif score >= target:
-         st.header(batting_team + " won the match")
-         st.header(bowling_team + " lost the match")
+st.text("Please insert the input within the given range")
 
-      elif ((((overs*6 + balls)== 120) and (score==target-1)) or ((score==target-1) and (wickets==10))):
-         st.header("Match Tied")
+if st.button('Predict Probability'):
+   if ((score >= target+6) or (score >= target and wickets == 10)):
+      st.header("Invalid Combinations")
          
-      elif (((overs*6 + balls)== 120 and score < target-1) or ((score<target-1) and (wickets==10))):
-         st.header(batting_team + " lost the match")
-         st.header(bowling_team + " won the match")
+   elif ((score < target) and (wickets > 10 or ((overs*6 + balls) > 120))):
+      st.header("Invalid Combinations")
          
+   elif score >= target:
+      st.header(batting_team + " won the match")
+      st.header(bowling_team + " lost the match")
+
+   elif ((((overs*6 + balls)== 120) and (score==target-1)) or ((score==target-1) and (wickets==10))):
+      st.header("Match Tied")
+         
+   elif (((overs*6 + balls)== 120 and score < target-1) or ((score<target-1) and (wickets==10))):
+      st.header(batting_team + " lost the match")
+      st.header(bowling_team + " won the match")
+         
+   else :
+      runs_left = target - score
+      balls_left = 120 - overs * 6 - balls
+      wickets = 10 - wickets
+      if overs != 0:
+         crr = (score*6)/(120 - balls_left)
+      else:
+         crr = 0  
+      if balls_left > 0:
+         rrr = (runs_left*6)/balls_left
       else :
-         runs_left = target - score
-         balls_left = 120 - overs * 6 - balls
-         wickets = 10 - wickets
-         if overs != 0:
-            crr = (score*6)/(120 - balls_left)
-         else:
-            crr = 0  
-         if balls_left > 0:
-            rrr = (runs_left*6)/balls_left
-         else :
-            rrr = 0
+         rrr = 0
 
             
-               
       input_df = pd.DataFrame({'batting_team':[batting_team],'bowling_team':[bowling_team],'city':[selected_city],'runs_left':[runs_left],'balls_left':[balls_left],'wickets_left':[wickets],'total_runs_x':[target],'crr':[crr],'rrr':[rrr]})
 
       
@@ -95,6 +95,4 @@ if ((wickets<=10 and wickets>=0) and (overs<=19 and overs>=0) and (balls<=6 and 
       win = result[0][1]
       st.header(batting_team + "- " + str(round(win*100)) + "%")
       st.header(bowling_team + "- " + str(round(loss*100)) + "%")
-      
-else:
-   st.text("Please insert the input within the given range")
+
