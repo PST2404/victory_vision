@@ -53,9 +53,18 @@ with col5:
 with col6:
    balls = st.number_input('Balls completed', min_value=0, max_value=6,step=1, format="%d")
 
-st.text("Please insert the input within the given range")
 
-if st.button('Predict Probability'):
+# Create a checkbox
+agree_checkbox = st.checkbox("All the input feilds are correctly filled")
+
+# Create a button and disable it until checkbox is checked
+if agree_checkbox:
+   button_disabled = False 
+else:
+   button_disabled = True 
+
+  
+if st.button('Predict Probability', disabled=button_disabled):
    if ((score >= target+6) or (score >= target and wickets == 10)):
       st.header("Invalid Combinations")
          
@@ -68,7 +77,7 @@ if st.button('Predict Probability'):
 
    elif ((((overs*6 + balls)== 120) and (score==target-1)) or ((score==target-1) and (wickets==10))):
       st.header("Match Tied")
-         
+      
    elif (((overs*6 + balls)== 120 and score < target-1) or ((score<target-1) and (wickets==10))):
       st.header(batting_team + " lost the match")
       st.header(bowling_team + " won the match")
@@ -95,4 +104,4 @@ if st.button('Predict Probability'):
       win = result[0][1]
       st.header(batting_team + "- " + str(round(win*100)) + "%")
       st.header(bowling_team + "- " + str(round(loss*100)) + "%")
-
+      
